@@ -8,6 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
@@ -17,13 +18,19 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 @EnableScheduling
 public class Application implements SchedulingConfigurer {
 	private static final Logger log = LoggerFactory.getLogger(Application.class);
-	private static final SHT21 sht21 = new SHT21();
 
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
+	@Autowired SHT21 sht21;
+	@Autowired JdbcTemplate jdbcTemplate;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
+	}
+
+	@Bean
+	@Scope("singleton")
+	public SHT21 getSHT21() {
+		log.info("Creating SHT21 bean");
+		return new SHT21();
 	}
 
 	@Override
